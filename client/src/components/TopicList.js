@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchTopics, createTopic } from '../services/api';
+import { fetchTopics, createTopic, deleteTopic,voteTopic } from '../services/api';
 
 const TopicList = () => {
   const [topics, setTopics] = useState([]);
@@ -46,9 +46,29 @@ const TopicList = () => {
 
       <ul>
         {topics.map((topic) => (
-          <li key={topic._id}>
-            {topic.title} — Score: {topic.score}
-          </li>
+        <li key={topic._id}>
+          <button onClick={async () => {
+            const updated = await voteTopic(topic._id, 'up');
+            setTopics(prev => [...prev.map(t => t._id === updated._id ? updated : t)].sort((a, b) => b.score - a.score));
+          }}>⬆️</button>
+
+          <button onClick={async () => {
+            const updated = await voteTopic(topic._id, 'down');
+            setTopics(prev => [...prev.map(t => t._id === updated._id ? updated : t)].sort((a, b) => b.score - a.score));
+          }}>⬇️</button>
+
+          {topic.title} — Score: {topic.score}
+
+          <button
+            onClick={async () => {
+              await deleteTopic(topic._id);
+              setTopics((prev) => prev.filter((t) => t._id !== topic._id));
+            }}
+            style={{ marginLeft: '1rem' }}
+          >
+            🗑️
+          </button>
+        </li>
         ))}
       </ul>
     </div>

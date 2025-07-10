@@ -16,3 +16,20 @@ export async function createTopic(title) {
   if (!res.ok) throw new Error('Failed to create topic');
   return res.json();
 }
+
+export async function deleteTopic(id) {
+  const res = await fetch(`http://localhost:5050/topics/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to delete topic');
+}
+
+export async function voteTopic(id, direction) {
+  const res = await fetch(`http://localhost:5050/topics/${id}/${direction}`, {
+    method: 'PUT',
+  });
+
+  if (!res.ok) throw new Error('Failed to vote');
+  return res.json();
+}
+
